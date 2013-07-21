@@ -1,12 +1,14 @@
 package gui;
 
-import java.awt.BorderLayout;
-
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JPanel;
 
 public class CharacterScreen extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2606545582107471954L;
+
 	public CharacterScreen() { 
 		setTitle("Characters");
 		setSize(800, 600);
