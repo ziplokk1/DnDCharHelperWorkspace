@@ -1,9 +1,10 @@
 package armor;
 
+import item.Item;
 import res.Tools;
 import res.Money.Currency;
 
-public class Armor {
+public class Armor extends Item {
 	private boolean canRunAtQuadSpeed = true;
 	private boolean handNotFreeToCastSpells = false;
 	private Currency cost;
@@ -14,9 +15,14 @@ public class Armor {
 	private double arcaneSpellFailure;
 	private int speed;
 	private int weight;
+	
+	/*
+	 * Used to generate labels faster in the ArmorGUI class
+	 */
 	private String[] basics = new String[8];
 	
 	public Armor(String armorName) { 
+		super(armorName);
 		name = armorName;
 		basics[0] = name;
 	}
@@ -29,6 +35,11 @@ public class Armor {
 		return name;
 	}
 	
+	/*
+	 * Used only for shields.
+	 * Indicates whether the players hand 
+	 * cannot use spells with equipped shield.
+	 */
 	public void setHandNotFreeToCastSpells(boolean b) { 
 		handNotFreeToCastSpells = b;
 	}
@@ -37,6 +48,10 @@ public class Armor {
 		return handNotFreeToCastSpells;
 	}
 	
+	/*
+	 * Used to determine how fast the player can sprint with equipped armor
+	 * default is false. When param is true, player can only sprint at 3x speed.
+	 */
 	public void setCanRunAtQuadSpeed(boolean b) { 
 		canRunAtQuadSpeed = b;
 	}
@@ -47,6 +62,7 @@ public class Armor {
 	
 	public void setCost(Currency c) { 
 		cost = c;
+		super.setCost(cost);
 		basics[1] = c.getAmountAndType();
 	}
 	
@@ -78,6 +94,10 @@ public class Armor {
 	
 	public void setArmorCheckPenalty(int i) { 
 		armorCheckPenalty = i;
+		
+		/*
+		 * Used only to convert armorCheckPenalty to a string
+		 */
 		if(this.getArmorCheckPenalty() > 0) { 
 			basics[4] = "-" + Integer.toString(this.getArmorCheckPenalty());
 		} else { 
@@ -113,6 +133,7 @@ public class Armor {
 	
 	public void setWeight(int i) { 
 		weight = i;
+		super.setWeight(weight);
 		basics[7] = Integer.toString(this.getWeight()) + " lbs.";
 	}
 	

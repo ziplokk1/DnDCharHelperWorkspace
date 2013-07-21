@@ -7,6 +7,11 @@ public class Currency {
 		this.AMOUNT = amount;
 	}
 	
+	/*
+	 * Converts between currencies
+	 * @param
+	 * onlu use "cp", "sp", "gp", "pp".
+	 */
 	public double ConvertTo(String type0) { 
 		switch(type0) { 
 		case "cp":
@@ -25,6 +30,10 @@ public class Currency {
 		return AMOUNT;
 	}
 	
+	/*
+	 * Returns a string formatted for the (amount type) style
+	 * Example: 12 copper peices will return as 12cp
+	 */
 	public String getAmountAndType() { 
 		String type = null;
 		int amt = 0;

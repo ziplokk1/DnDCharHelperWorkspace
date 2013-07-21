@@ -6,11 +6,18 @@ public class Dice {
 	private int qty;
 	private int sides;
 	
+	/*
+	 * Quantity of dice and number of faces
+	 */
 	public Dice(int quantity, int faces) { 
 		qty = quantity;
 		sides = faces;
 	}
 	
+	/*
+	 * returns a string that is in the format of (xdy)
+	 * example: two d10s would show as 2d10;
+	 */
 	public String getDie() { 
 		if(sides == 1) { 
 			return "1";

@@ -1,9 +1,10 @@
 package weapons;
 
+import item.Item;
 import res.Dice;
 import res.Money.Currency;
 
-public class Weapon {
+public class Weapon extends Item {
 	private String name;
 	private int CRITICAL;
 	private int CRITICAL_MULTIPLIER;
@@ -17,6 +18,7 @@ public class Weapon {
 	private String size;
 	
 	public Weapon(String name0) { 
+		super(name0);
 		this.name = name0;
 	}
 	
@@ -46,6 +48,7 @@ public class Weapon {
 	
 	public void setWeight(int weight) { 
 		WEIGHT = weight;
+		super.setWeight(WEIGHT);
 	}
 	
 	public void setDamage(Dice die) { 
@@ -54,6 +57,7 @@ public class Weapon {
 	
 	public void setCost(Currency currency) { 
 		cost = currency;
+		super.setCost(cost);
 	}
 	
 	public void setHardness(int hardness) { 
@@ -96,11 +100,17 @@ public class Weapon {
 		return HARDNESS;
 	}
 	
+	/*
+	 * returns only the integer amount of the cost's currency.
+	 */
 	public int getAbsCost() { 
 		return cost.getAmount();
 	}
 	
-	public String getCost() { 
+	/*
+	 * Only used for GUI purposes
+	 */
+	public String getThisCost() { 
 		if(getAbsCost() == 0) {
 			return "-";
 		} else if (getAbsCost() == -1) { 
@@ -110,6 +120,10 @@ public class Weapon {
 		}
 	}
 	
+	/*
+	 * Returns a string in the (xdy) format according to player size
+	 * the smaller a player is, the less damage their weapon does, and vice versa.
+	 */
 	public String getDamage(int playerSize) { 
 		
 		int sizeMod = playerSize - 4;
