@@ -1,5 +1,7 @@
 package res;
 
+import java.util.Random;
+
 public class Dice {
 	private int qty;
 	private int sides;
@@ -25,5 +27,15 @@ public class Dice {
 	
 	public int getQuantity() { 
 		return qty;
+	}
+	
+	public int rollDie() { 
+		int rollTotal = 0;
+		for(int i = 0; i < qty; i++) { 
+			Random r = new Random();
+			int roll = r.nextInt(sides) + 1;
+			rollTotal += roll;
+		}
+		return rollTotal;
 	}
 }

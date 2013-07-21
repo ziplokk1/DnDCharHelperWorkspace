@@ -1,25 +1,52 @@
 package main;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import res.Money.Copper;
-import res.Money.Gold;
-import res.Money.Silver;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+
+import armor.*;
+
+import races.*;
+import res.Dice;
+import res.Tools;
 import weapons.Weapon;
 import weapons.exotic.*;
 import weapons.simple.*;
 import weapons.martial.*;
 import entities.Player;
-import gui.CharacterScreen;
+import gui.CreateCharScreen;
 import gui.SWTCharScreen;
 
 
 public class Main {
+	
+	public static Display display;
+	private static Shell armorShell;
+	private static int baseModifier = 8;
+	private static boolean SWTEnabled = true;
+	
 
 	public static List<Player> players;
 	public static List<Weapon> simpleWeapons;
 	public static List<Weapon> martialWeapons;
 	public static List<Weapon> exoticWeapons;
+	public static List<Armor> lightArmor;
+	public static List<Armor> mediumArmor;
+	public static List<Armor> heavyArmor;
+	public static List<Armor> shields;
+	public static List<Race> races;
+	
 	
 	/*
 	 * Size Chart--
@@ -39,14 +66,211 @@ public class Main {
 		simpleWeapons = new ArrayList<Weapon>();
 		martialWeapons = new ArrayList<Weapon>();
 		exoticWeapons = new ArrayList<Weapon>();
+		lightArmor = new ArrayList<Armor>();
+		mediumArmor = new ArrayList<Armor>();
+		heavyArmor = new ArrayList<Armor>();
+		shields = new ArrayList<Armor>();
+		races = new ArrayList<Race>();
+		
+		display = new Display();
 		
 		CreateSimpleWeapons();
 		CreateMartialWeapons();
 		CreateExoticWeapons();
 		
-		CreateGUI();
+		CreateLightArmor();
+		CreateMediumArmor();
+		CreateHeavyArmor();
+		CreateShields();
+		
+		CreateRaces();
+		
+		Player mark = new Player("Mark");
+		mark.setStr(12);
+		mark.setRace(new Halfling());
+		mark.setEquippedArmor(new Leather());
+		mark.setEquippedWeapon(new Rapier());
+		
+		Player courtney = new Player("Courtney");
+		courtney.setStr(8);
+		courtney.setRace(new Elf());
+		courtney.setEquippedArmor(new HalfPlate());
+		courtney.setEquippedWeapon(new BastardSword());
+		
+		Player raney = new Player("Raney");
+		raney.setStr(12);
+		raney.setRace(new Gnome());
+		raney.setEquippedArmor(new StuddedLeather());
+		raney.setEquippedWeapon(new Flail());
+		
+		players.add(mark);
+		players.add(courtney);
+		players.add(raney);
+		players.add(CreateRandomPlayer("Stephanie"));
+		players.add(CreateRandomPlayer("Gary"));
+		players.add(CreateRandomPlayer("Joules"));
+		
+		setBaseModifier(8);
+		
+		for(Player p : players) {
+			System.out.println(p.getName());
+			System.out.println(p.getRace().getRaceName());
+			
+			System.out.println("Str Total: " + Integer.toString(p.getStr() + p.getRace().getStrBonus()));
+			System.out.println("Str Base: " + Integer.toString(p.getStr()));
+			System.out.println("Str Racial Bonus: " + Integer.toString(p.getRace().getStrBonus()));
+			System.out.println("Str Modifier: " + Integer.toString(p.getModifier(p.getStr() + p.getRace().getStrBonus())));
+			System.out.println("Size: " + p.getRace().getSize());
+			System.out.println("Weapon: " + p.getEquippedWeapon().getName());
+			System.out.println("Damage: " + p.getEquippedWeapon().getDamage(p.getRace().getSize()));
+			System.out.println("Armor: " + p.getEquippedArmor().getName());
+			System.out.println("AC: " + Integer.toString(p.getEquippedArmor().getArmorBonus() + 10));
+			
+			System.out.println("Speed: " + p.getRace().getSpeed());
+			System.out.println("-------------------------");
+			
+		}
+		
+		System.out.println(RollHP(new Dice(2, 10)));
+		
+		if(SWTEnabled == true) {
+			new SWTCharScreen();
+		}
 	}
 	
+	public static Display getDisplay() { 
+		return display;
+	}
+	
+	public static void CreateRaces() { 
+		races.add(new Dwarf());
+		races.add(new Elf());
+		races.add(new Gnome());
+		races.add(new HalfElf());
+		races.add(new Halfling());
+		races.add(new HalfOrc());
+		races.add(new Human());
+	}
+	
+	public static void setBaseModifier(int i) { 
+		baseModifier = i;
+	}
+	
+	public static int getBaseModifier() { 
+		return baseModifier;
+	}
+	
+	public static Player CreateRandomPlayer(String name) { 
+		Player rand = new Player(name);
+		rand.setRace(RandomRace());
+		if(rand.getRace().getRaceName().equals("halfling")) {
+			rand.setEquippedArmor(RandomArmor("light"));
+		} else { 
+			Random r = new Random();
+			int i = r.nextInt(3);
+			switch(i) { 
+			case 0:
+				rand.setEquippedArmor(RandomArmor("light"));
+				break;
+			case 1:
+				rand.setEquippedArmor(RandomArmor("medium"));
+				break;
+			case 2:
+				rand.setEquippedArmor(RandomArmor("heavy"));
+				break;
+			}
+		}
+		Random r = new Random();
+		int i = r.nextInt(3);
+		switch(i) { 
+		case 0:
+			rand.setEquippedWeapon(RandomWeapon("simple"));
+			break;
+		case 1:
+			rand.setEquippedWeapon(RandomWeapon("martial"));
+			break;
+		case 2:
+			rand.setEquippedWeapon(RandomWeapon("exotic"));
+			break;
+		}
+		return rand;
+	}
+	
+	private static Race RandomRace() { 
+		Random r = new Random();
+		int i = r.nextInt(races.size());
+		return races.get(i);
+	}
+	
+	private static Weapon RandomWeapon(String s) { 
+		Random r = new Random();
+		int i = -1;
+		switch(s) { 
+		case "simple":
+			i = r.nextInt(simpleWeapons.size());
+			return simpleWeapons.get(i);
+		case "martial":
+			i = r.nextInt(martialWeapons.size());
+			return martialWeapons.get(i);
+		case "exotic":
+			i = r.nextInt(exoticWeapons.size());
+			return exoticWeapons.get(i);
+		}
+		return null;
+	}
+	
+	private static Armor RandomArmor(String s) { 
+		Random r = new Random();
+		int i = -1;
+		switch(s) { 
+		case "light":
+			i = r.nextInt(lightArmor.size());
+			return lightArmor.get(i);
+		case "medium":
+			i = r.nextInt(mediumArmor.size());
+			return mediumArmor.get(i);
+		case "heavy":
+			i = r.nextInt(heavyArmor.size());
+			return heavyArmor.get(i);
+		}
+		return null;
+	}
+	
+	private static int RollHP(Dice d) { 
+		return d.rollDie();
+	}
+	
+	private static void CreateLightArmor() { 
+		lightArmor.add(new Padded());
+		lightArmor.add(new Leather());
+		lightArmor.add(new StuddedLeather());
+		lightArmor.add(new ChainShirt());
+	}
+	
+	private static void CreateMediumArmor() { 
+		mediumArmor.add(new Hide());
+		mediumArmor.add(new ScaleMail());
+		mediumArmor.add(new ChainMail());
+		mediumArmor.add(new Breastplate());
+	}
+	
+	private static void CreateHeavyArmor() { 
+		heavyArmor.add(new SplintMail());
+		heavyArmor.add(new BandedMail());
+		heavyArmor.add(new HalfPlate());
+		heavyArmor.add(new FullPlate());
+	}
+	
+	public static void CreateShields() { 
+		shields.add(new Buckler());
+		shields.add(new LightWoodenShield());
+		shields.add(new HeavyWoodenShield());
+		shields.add(new LightSteelShield());
+		shields.add(new HeavySteelShield());
+		shields.add(new TowerShield());
+	}
+	
+	@SuppressWarnings("unused")
 	private static void CreateGUI() { 
 		//CharacterScreen gui = new CharacterScreen();
 		//gui.setVisible(true);

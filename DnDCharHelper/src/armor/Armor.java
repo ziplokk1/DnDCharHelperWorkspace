@@ -1,5 +1,6 @@
 package armor;
 
+import res.Tools;
 import res.Money.Currency;
 
 public class Armor {
@@ -13,9 +14,19 @@ public class Armor {
 	private double arcaneSpellFailure;
 	private int speed;
 	private int weight;
+	private String[] basics = new String[8];
 	
 	public Armor(String armorName) { 
 		name = armorName;
+		basics[0] = name;
+	}
+	
+	public String[] getBasics() { 
+		return basics;
+	}
+	
+	public String getName() { 
+		return name;
 	}
 	
 	public void setHandNotFreeToCastSpells(boolean b) { 
@@ -36,6 +47,7 @@ public class Armor {
 	
 	public void setCost(Currency c) { 
 		cost = c;
+		basics[1] = c.getAmountAndType();
 	}
 	
 	public Currency getCost() { 
@@ -44,6 +56,7 @@ public class Armor {
 	
 	public void setArmorBonus(int i) { 
 		armorBonus = i;
+		basics[2] = "+" + Integer.toString(armorBonus);
 	}
 	
 	public int getArmorBonus() { 
@@ -52,6 +65,7 @@ public class Armor {
 	
 	public void setMaxDexBonus(int i) { 
 		maxDexBonus = i;
+		basics[3] = "+" + Integer.toString(getMaxDexBonus());
 	}
 	
 	public int getMaxDexBonus() { 
@@ -64,6 +78,11 @@ public class Armor {
 	
 	public void setArmorCheckPenalty(int i) { 
 		armorCheckPenalty = i;
+		if(this.getArmorCheckPenalty() > 0) { 
+			basics[4] = "-" + Integer.toString(this.getArmorCheckPenalty());
+		} else { 
+			basics[4] = Integer.toString(this.getArmorCheckPenalty());
+		}
 	}
 	
 	public int getArmorCheckPenalty() { 
@@ -72,6 +91,7 @@ public class Armor {
 	
 	public void setArcaneSpellFailure(double i) { 
 		arcaneSpellFailure = i;
+		basics[5] = Tools.convertDeciToPercent(this.getArcaneSpellFailure());
 	}
 	
 	public double getArcaneSpellFailure() { 
@@ -80,6 +100,7 @@ public class Armor {
 	
 	public void setSpeed(int i) { 
 		speed = i;
+		basics[6] = Integer.toString(this.getSpeed()) + " ft.";
 	}
 	
 	public int getSpeed() {
@@ -92,6 +113,7 @@ public class Armor {
 	
 	public void setWeight(int i) { 
 		weight = i;
+		basics[7] = Integer.toString(this.getWeight()) + " lbs.";
 	}
 	
 	public int getWeight() { 
