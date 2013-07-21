@@ -85,27 +85,6 @@ public class Main {
 		
 		CreateRaces();
 		
-		Player mark = new Player("Mark");
-		mark.setStr(12);
-		mark.setRace(new Halfling());
-		mark.setEquippedArmor(new Leather());
-		mark.setEquippedWeapon(new Rapier());
-		
-		Player courtney = new Player("Courtney");
-		courtney.setStr(8);
-		courtney.setRace(new Elf());
-		courtney.setEquippedArmor(new HalfPlate());
-		courtney.setEquippedWeapon(new BastardSword());
-		
-		Player raney = new Player("Raney");
-		raney.setStr(12);
-		raney.setRace(new Gnome());
-		raney.setEquippedArmor(new StuddedLeather());
-		raney.setEquippedWeapon(new Flail());
-		
-		players.add(mark);
-		players.add(courtney);
-		players.add(raney);
 		players.add(CreateRandomPlayer("Stephanie"));
 		players.add(CreateRandomPlayer("Gary"));
 		players.add(CreateRandomPlayer("Joules"));
