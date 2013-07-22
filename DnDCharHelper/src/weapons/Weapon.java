@@ -1,5 +1,8 @@
 package weapons;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import item.Item;
 import res.Dice;
 import res.Money.Currency;
@@ -17,9 +20,32 @@ public class Weapon extends Item {
 	private int HP;
 	private String size;
 	
+	private List<String> basics;
+	
 	public Weapon(String name0) { 
 		super(name0);
+		basics = new ArrayList<String>();
 		this.name = name0;
+	}
+	
+	public void setBasics() { 
+		basics.add(this.getName());
+		if(this.getCost().getAmount() == 0) { 
+			basics.add("-");
+		} else if (this.getCost().getAmount() == -1) { 
+			basics.add("Special");
+		} else {
+			basics.add(this.getCost().getAmountAndType());
+		}
+		basics.add(this.getDamage(-1));
+		basics.add(this.getCrits());
+		basics.add(this.getRangeIncrement());
+		basics.add(Integer.toString(this.getWeight()) + " lbs.");
+		basics.add(this.getType());
+	}
+	
+	public List<String> getBasics() { 
+		return basics;
 	}
 	
 	public String getSize() { 
@@ -36,6 +62,19 @@ public class Weapon extends Item {
 	
 	public String getCriticalMultiplier() { 
 		return "x" + Integer.toString(CRITICAL_MULTIPLIER);
+	}
+	
+	public String getCrits() { 
+		if(CRITICAL_MULTIPLIER != 0 && CRITICAL != 0) {
+			return Integer.toString(CRITICAL) + 
+					"-20/x" + Integer.toString(CRITICAL_MULTIPLIER);
+		} else if (CRITICAL_MULTIPLIER == 0) { 
+			return "-";
+		} else if (CRITICAL_MULTIPLIER != 0 && CRITICAL == 0) { 
+			return "x" + Integer.toString(CRITICAL_MULTIPLIER);
+		} else { 
+			return "ERR";
+		}
 	}
 	
 	public String getDamageVersus(String size) { 
@@ -489,6 +528,10 @@ public class Weapon extends Item {
 				break;
 			}
 			break;
+		}
+		
+		if(playerSize == -1) {
+			return DAMAGE.getDie();
 		}
 		
 		if(die != null) {
