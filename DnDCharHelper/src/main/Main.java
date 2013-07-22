@@ -16,8 +16,7 @@ import weapons.exotic.*;
 import weapons.simple.*;
 import weapons.martial.*;
 import entities.Player;
-import gui.ItemGUI;
-import gui.SWTCharScreen;
+import gui.MainScrSWT;
 
 /*
  * Created by Mark Sanders
@@ -120,7 +119,7 @@ public class Main {
 		//CreateRandomPlayers(); //this is for testing
 		
 		if(SWTEnabled == true) {
-			new ItemGUI();
+			new MainScrSWT();
 		}
 	}
 	
@@ -390,7 +389,6 @@ public class Main {
 	private static void CreateGUI() { 
 		//CharacterScreen gui = new CharacterScreen();
 		//gui.setVisible(true);
-		new SWTCharScreen();
 	}
 	
 	private static void CreateExoticWeapons() { 

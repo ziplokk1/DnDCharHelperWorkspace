@@ -4,7 +4,10 @@ import java.util.Random;
 
 import main.Main;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -14,6 +17,11 @@ import armor.Armor;
 import entities.Player;
 
 public class Tools {
+	
+	public static void CheckResize(ScrolledComposite sc, Composite c) { 
+		org.eclipse.swt.graphics.Rectangle r = sc.getClientArea();
+		sc.setMinSize(c.computeSize(r.width, SWT.DEFAULT));
+	}
 	
 	public static Player CreateRandomPlayer(String name) { 
 		Player rand = new Player(name);
