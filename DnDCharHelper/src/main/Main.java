@@ -16,7 +16,7 @@ import weapons.exotic.*;
 import weapons.simple.*;
 import weapons.martial.*;
 import entities.Player;
-import gui.MainScrSWT;
+import gui.*;
 
 /*
  * Created by Mark Sanders
@@ -119,7 +119,7 @@ public class Main {
 		//CreateRandomPlayers(); //this is for testing
 		
 		if(SWTEnabled == true) {
-			new MainScrSWT();
+			new CharScrSWT();
 		}
 	}
 	

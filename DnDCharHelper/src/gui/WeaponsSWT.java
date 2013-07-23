@@ -74,6 +74,7 @@ public class WeaponsSWT {
 		});
 		
 		shell.pack();
+		shell.setSize(shell.getBounds().width, 600);
 		shell.setLocation(Tools.CenterScreen(display, shell));
 		shell.open();
 		shell.setActive();
