@@ -10,6 +10,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -19,6 +21,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -58,10 +62,90 @@ public class CharScrSWT {
 		abilData.horizontalSpan = 2;
 		abil.setLayoutData(abilData);
 		
+		Saves saves = new Saves(shell, SWT.BORDER);
+		saves.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		CreateMenu();
+		
 		shell.pack();
 		shell.setLocation(Tools.CenterScreen(display, shell));
 		shell.open();
 		shell.setActive();
+		while(!shell.isDisposed()) { 
+			if(!display.readAndDispatch()) { 
+				display.sleep();
+			}
+		}
+	}
+	
+	private void CreateMenu() { 
+		Menu topMenu = new Menu(shell, SWT.BAR);
+		Menu fileMenu = new Menu(topMenu);
+		Menu resourcesMenu = new Menu(topMenu);
+		
+		MenuItem fileItem = new MenuItem(topMenu, SWT.CASCADE);
+		fileItem.setText("File");
+		fileItem.setMenu(fileMenu);
+		
+		MenuItem newItem = new MenuItem(fileMenu, SWT.CASCADE);
+		newItem.setText("New");
+		
+		MenuItem openItem = new MenuItem(fileMenu, SWT.CASCADE);
+		openItem.setText("Open");
+		
+		MenuItem saveItem = new MenuItem(fileMenu, SWT.CASCADE);
+		saveItem.setText("Save");
+		
+		MenuItem editItem = new MenuItem(topMenu, SWT.CASCADE);
+		editItem.setText("Edit");
+		
+		MenuItem windowsItem = new MenuItem(topMenu, SWT.CASCADE);
+		windowsItem.setText("Windows");
+		
+		MenuItem resourcesItem = new MenuItem(topMenu, SWT.CASCADE);
+		resourcesItem.setText("Resources");
+		resourcesItem.setMenu(resourcesMenu);
+		
+		MenuItem armorItem = new MenuItem(resourcesMenu, SWT.CASCADE);
+		armorItem.setText("Armor");
+		armorItem.addSelectionListener(new ResourcesSelection());
+		
+		MenuItem weaponsItem = new MenuItem(resourcesMenu, SWT.CASCADE);
+		weaponsItem.setText("Weapons");
+		weaponsItem.addSelectionListener(new ResourcesSelection());
+		
+		MenuItem itemsItem = new MenuItem(resourcesMenu, SWT.CASCADE);
+		itemsItem.setText("Items");
+		itemsItem.addSelectionListener(new ResourcesSelection());
+		
+		
+		shell.setMenuBar(topMenu);
+	}
+	
+	private class ResourcesSelection implements SelectionListener {
+
+		@Override
+		public void widgetDefaultSelected(SelectionEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void widgetSelected(SelectionEvent arg0) {
+			MenuItem item = (MenuItem) arg0.widget;
+			switch(item.getText()) { 
+			case "Armor":
+				new ArmorsSWT();
+				break;
+			case "Weapons":
+				new WeaponsSWT();
+				break;
+			case "Items":
+				new ItemsSWT();
+				break;
+			}
+		} 
+		
 	}
 	
 	private void CreateSkillTable() { 
@@ -112,6 +196,7 @@ public class CharScrSWT {
 		GridData csd = new GridData(GridData.FILL_HORIZONTAL);
 		csd.horizontalSpan = 4;
 		currentSkill.setLayoutData(csd);
+		currentSkill.setForeground(new Color(display, 255, 0, 0));
 		
 		skillList.addSelectionListener(new SelectionAdapter() { 
 			@Override
@@ -132,6 +217,11 @@ public class CharScrSWT {
 			lbl.setText(headers[i]);
 			lbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		}
+		
+		Label separator = new Label(skillGroup, SWT.HORIZONTAL | SWT.SEPARATOR);
+		GridData separatorData = new GridData(GridData.FILL_HORIZONTAL);
+		separatorData.horizontalSpan = 4;
+		separator.setLayoutData(separatorData);
 		
 		skillTotal = new Label(skillGroup, SWT.BORDER | SWT.CENTER);
 		skillTotal.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -193,6 +283,219 @@ public class CharScrSWT {
 	public void setHP(int i) { 
 		hp = i;
 		HP.setText("HP: " + Integer.toString(i));
+	}
+	
+	private class Saves extends Composite {
+		
+		Label fortTotal;
+		Label fortBase;
+		Label fortMod;
+		Text fortMagic;
+		Text fortMisc;
+		Text fortTemp;
+		
+		Label refTotal;
+		Label refBase;
+		Label refMod;
+		Text refMagic;
+		Text refMisc;
+		Text refTemp;
+		
+		Label willTotal;
+		Label willBase;
+		Label willMod;
+		Text willMagic;
+		Text willMisc;
+		Text willTemp;
+		
+		String[] headers = {"", "Total", "Base", "Ability", "Magic", "Misc", "Temp"};
+		
+		public Saves(Composite arg0, int arg1) {
+			super(arg0, arg1);
+			setLayout(new GridLayout(7, true));
+			CreateLabels();
+		} 
+		
+		private void CreateLabels() { 
+			
+			for(int i = 0; i < headers.length; i++) { 
+				Label header = new Label(this, SWT.CENTER);
+				header.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				header.setText(headers[i]);
+			}
+			
+			Label separator = new Label(this, SWT.HORIZONTAL | SWT.SEPARATOR);
+			GridData separatorData = new GridData(GridData.FILL_HORIZONTAL);
+			separatorData.horizontalSpan = 7;
+			separator.setLayoutData(separatorData);
+			
+			Label fort = new Label(this, SWT.CENTER);
+			fort.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			fort.setText("Fortitude:");
+			
+			fortTotal = new Label(this, SWT.CENTER | SWT.BORDER);
+			fortTotal.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			fortBase = new Label(this, SWT.CENTER);
+			fortBase.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			fortMod = new Label(this, SWT.CENTER);
+			fortMod.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			fortMagic = new Text(this, SWT.CENTER | SWT.BORDER);
+			fortMagic.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			fortMagic.addListener(SWT.Verify, new VerifyListener());
+			fortMagic.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+			
+			fortMisc = new Text(this, SWT.CENTER | SWT.BORDER);
+			fortMisc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			fortMisc.addListener(SWT.Verify, new VerifyListener());
+			fortMisc.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+			
+			fortTemp = new Text(this, SWT.CENTER | SWT.BORDER);
+			fortTemp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			fortTemp.addListener(SWT.Verify, new VerifyListener());
+			fortTemp.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+			
+			
+			
+			Label ref = new Label(this, SWT.CENTER);
+			ref.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			ref.setText("Reflex:");
+			
+			refTotal = new Label(this, SWT.CENTER | SWT.BORDER);
+			refTotal.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			refBase = new Label(this, SWT.CENTER);
+			refBase.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			refMod = new Label(this, SWT.CENTER);
+			refMod.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			refMagic = new Text(this, SWT.CENTER | SWT.BORDER);
+			refMagic.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			refMagic.addListener(SWT.Verify, new VerifyListener());
+			refMagic.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+			
+			refMisc = new Text(this, SWT.CENTER | SWT.BORDER);
+			refMisc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			refMisc.addListener(SWT.Verify, new VerifyListener());
+			refMisc.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+			
+			refTemp = new Text(this, SWT.CENTER | SWT.BORDER);
+			refTemp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			refTemp.addListener(SWT.Verify, new VerifyListener());
+			refTemp.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+			
+			
+			
+			Label will = new Label(this, SWT.CENTER);
+			will.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			will.setText("Willpower:");
+			
+			willTotal = new Label(this, SWT.CENTER | SWT.BORDER);
+			willTotal.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			willBase = new Label(this, SWT.CENTER);
+			willBase.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			willMod = new Label(this, SWT.CENTER);
+			willMod.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			willMagic = new Text(this, SWT.CENTER | SWT.BORDER);
+			willMagic.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			willMagic.addListener(SWT.Verify, new VerifyListener());
+			willMagic.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+			
+			willMisc = new Text(this, SWT.CENTER | SWT.BORDER);
+			willMisc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			willMisc.addListener(SWT.Verify, new VerifyListener());
+			willMisc.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+			
+			willTemp = new Text(this, SWT.CENTER | SWT.BORDER);
+			willTemp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			willTemp.addListener(SWT.Verify, new VerifyListener());
+			willTemp.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				} 
+			});
+		}
+	}
+	
+	private class VerifyListener implements Listener { 
+		@Override
+	    public void handleEvent(Event e) {
+			String string = e.text;
+			char[] chars = new char[string.length()];
+			string.getChars(0, chars.length, chars, 0);
+			for (int i = 0; i < chars.length; i++) {
+				if (!('0' <= chars[i] && chars[i] <= '9')) {
+					e.doit = false;
+					return;
+				}
+			}
+	    }
+	}
+	
+	@SuppressWarnings("unused")
+	private class Equipment extends Composite {
+
+		public Equipment(Composite arg0, int arg1) {
+			super(arg0, arg1);
+			
+		} 
+		
 	}
 	
 	private class Basics extends Composite {
@@ -417,6 +720,11 @@ public class CharScrSWT {
 				header.setText(headers[i]);
 				header.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			}
+			
+			Label separator = new Label(this, SWT.HORIZONTAL | SWT.SEPARATOR);
+			GridData separatorData = new GridData(GridData.FILL_HORIZONTAL);
+			separatorData.horizontalSpan = 7;
+			separator.setLayoutData(separatorData);
 			
 			Label str = new Label(this, SWT.NONE | SWT.CENTER);
 			str.setText("Str:");
