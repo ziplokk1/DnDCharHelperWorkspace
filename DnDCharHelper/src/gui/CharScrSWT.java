@@ -6,6 +6,8 @@ import java.util.List;
 import main.Main;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -67,7 +69,18 @@ public class CharScrSWT {
 		
 		CreateMenu();
 		
+		/*
+		 * Uncomment to print shell size upon resizing shell
+		 */
+		shell.addControlListener(new ControlAdapter() { 
+			@Override
+			public void controlResized(ControlEvent e) { 
+				//System.out.println(shell.getSize());
+			}
+		});
+		
 		shell.pack();
+		shell.setSize(705, 477);
 		shell.setLocation(Tools.CenterScreen(display, shell));
 		shell.open();
 		shell.setActive();
@@ -283,6 +296,7 @@ public class CharScrSWT {
 	public void setHP(int i) { 
 		hp = i;
 		HP.setText("HP: " + Integer.toString(i));
+		currentHP.setMaximum(i);
 	}
 	
 	private class Saves extends Composite {
