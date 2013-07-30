@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
+import entities.Player;
+
 import res.Tools;
 import weapons.Weapon;
 
@@ -38,8 +40,10 @@ public class WeaponsSWT {
 	Menu add;
 	String[] headers = {"Weapon", "Cost", "Damage", "Critical", 
 			"Range Increment", "Weight", "Type"};
+	Player player;
 	
-	public WeaponsSWT() { 
+	public WeaponsSWT(Player character) { 
+		player = character;
 		display = Main.display;
 		shell = new Shell(display);
 		shell.setText("Weapons");
@@ -109,15 +113,24 @@ public class WeaponsSWT {
 							final Label label = (Label) e.widget;
 							add = new Menu(label);
 							MenuItem addInventory = new MenuItem(add, SWT.CASCADE);
-							addInventory.setText("Add to inventory");
+							addInventory.setText("Add weapon");
 							addInventory.addSelectionListener(new SelectionAdapter() { 
 								@Override
 								public void widgetSelected(SelectionEvent e) { 
 									Item wpn = (Item) label.getData();
-									System.out.println(wpn.getName());
+									Weapon weapon = (Weapon) label.getData();
+									
+									player.getPlayerWeapons().add(weapon);
+									CharScrSWT.weaponsList.add(weapon.getName());
+									CharScrSWT.weaponsList.update();
+									
+									player.getPlayerInventory().add(wpn);
+									CharScrSWT.inventoryList.add(wpn.getName());
+									CharScrSWT.inventoryList.update();
 								}
 							});
 							
+							/*
 							MenuItem equip = new MenuItem(add, SWT.CASCADE);
 							equip.setText("Equip weapon");
 							equip.addSelectionListener(new SelectionAdapter() { 
@@ -127,7 +140,7 @@ public class WeaponsSWT {
 									System.out.println(wpn.getName());
 								}
 							});
-							
+							*/
 							lbl.setMenu(add);
 						}
 					}

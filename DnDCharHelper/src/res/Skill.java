@@ -1,6 +1,14 @@
 package res;
 
-public class Skill {
+import java.io.Serializable;
+
+import entities.Player;
+
+public class Skill implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8915821591302616154L;
 	private int ranks = 0;
 	private String ability = null;
 	private int abilMod = 0;
@@ -9,6 +17,10 @@ public class Skill {
 	private String name;
 	
 	public Skill(String name) { 
+		this.name = name;
+	}
+	
+	public Skill(String name, Player player) { 
 		this.name = name;
 	}
 	

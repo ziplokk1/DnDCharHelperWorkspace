@@ -14,6 +14,10 @@ public class Race {
 	int size;
 	int speed;
 	
+	public Race() { 
+		
+	}
+	
 	public Race(String name) { 
 		raceName = name;
 	}

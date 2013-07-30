@@ -52,6 +52,7 @@ public class Main {
 	public static List<Item> mountsAndRelatedGear;
 	public static List<Item> transport;
 	public static List<Item> spellcastingAndServices;
+	private static Player mainPlayer;
 	
 	
 	/*
@@ -92,6 +93,8 @@ public class Main {
 		
 		display = new Display();
 		
+		mainPlayer = new Player(null);
+		
 		CreateSimpleWeapons();
 		CreateMartialWeapons();
 		CreateExoticWeapons();
@@ -119,7 +122,8 @@ public class Main {
 		//CreateRandomPlayers(); //this is for testing
 		
 		if(SWTEnabled == true) {
-			new CharScrSWT();
+			//new CharScrSWT();
+			new MainScrSWT();
 		}
 	}
 	
@@ -136,12 +140,8 @@ public class Main {
 			System.out.println("Str Total: " + Integer.toString(p.getStr() + p.getRace().getStrBonus()));
 			System.out.println("Str Base: " + Integer.toString(p.getStr()));
 			System.out.println("Str Racial Bonus: " + Integer.toString(p.getRace().getStrBonus()));
-			System.out.println("Str Modifier: " + Integer.toString(p.getModifier(p.getStr() + p.getRace().getStrBonus())));
+			//System.out.println("Str Modifier: " + Integer.toString(p.getModifier(p.getStr() + p.getRace().getStrBonus())));
 			System.out.println("Size: " + p.getRace().getSize());
-			System.out.println("Weapon: " + p.getEquippedWeapon().getName());
-			System.out.println("Damage: " + p.getEquippedWeapon().getDamage(p.getRace().getSize()));
-			System.out.println("Armor: " + p.getEquippedArmor().getName());
-			System.out.println("AC: " + Integer.toString(p.getEquippedArmor().getArmorBonus() + 10));
 			
 			System.out.println("Speed: " + p.getRace().getSpeed());
 			System.out.println("-------------------------");
