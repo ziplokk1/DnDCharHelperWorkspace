@@ -1,6 +1,13 @@
 package races;
 
-public class Elf extends Race {
+import java.io.Serializable;
+
+public class Elf extends Race implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5776954355309237856L;
+
 	public Elf() { 
 		super("Elf");
 		super.setDexBonus(2);

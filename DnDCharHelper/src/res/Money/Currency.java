@@ -7,6 +7,10 @@ public class Currency {
 		this.AMOUNT = amount;
 	}
 	
+	public Currency() { 
+		
+	}
+	
 	/*
 	 * Converts between currencies
 	 * @param

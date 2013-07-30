@@ -8,6 +8,10 @@ import res.Dice;
 import res.Money.Currency;
 
 public class Weapon extends Item {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 88235821284540240L;
 	private String name;
 	private int CRITICAL;
 	private int CRITICAL_MULTIPLIER;
