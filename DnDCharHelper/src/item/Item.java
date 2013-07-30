@@ -1,11 +1,18 @@
 package item;
 
+import java.io.Serializable;
+
 import res.Money.Currency;
 
-public class Item {
+public class Item implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4258516407925509566L;
 	private int weight;
 	private Currency cost;
 	private String name;
+	private int quantity;
 	
 	public Item(String name) {
 		this.name = name;
@@ -16,6 +23,9 @@ public class Item {
 		this.weight = weight;
 		this.cost = cost;
 	}
+	
+	public void setQuantity(int i) { quantity = i; } 
+	public int getQuantity() { return quantity; }
 	
 	public String getName() { 
 		return name;

@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
+import entities.Player;
+
 import res.Tools;
 
 public class ItemsSWT {
@@ -41,7 +43,10 @@ public class ItemsSWT {
 	
 	Font f;
 	
-	public ItemsSWT() { 
+	Player player;
+	
+	public ItemsSWT(Player character) { 
+		player = character;
 		display = Main.display;
 		shell = new Shell(display);
 		shell.setText("Items");
@@ -141,7 +146,10 @@ public class ItemsSWT {
 					@Override
 					public void widgetSelected(SelectionEvent e) { 
 						Item i = (Item) lbl.getData();
-						System.out.println(i.getName());
+						player.getPlayerInventory().add(i);
+						CharScrSWT.inventoryList.add(i.getName());
+						CharScrSWT.inventoryList.update();
+						CharScrSWT.setInventoryWeightTotal(i.getWeight());
 					}
 				});
 				lbl.setMenu(addItemToInventory);

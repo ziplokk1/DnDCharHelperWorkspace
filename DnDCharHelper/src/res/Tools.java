@@ -1,5 +1,13 @@
 package res;
 
+import java.io.File;
+import races.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Random;
 
 import main.Main;
@@ -9,37 +17,182 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import races.Race;
 import weapons.Weapon;
 import armor.Armor;
 import entities.Player;
+import gui.CharScrSWT;
 
 public class Tools {
+	
+	/*
+	 * the following 6 methods total the pertaining ability and 
+	 * sets the param label to the total and returns the total number.
+	 * 
+	 * returns an integer to set the modifier labels with.
+	 */
+	public static int TotalDex(Player character, Label label) { 
+		int total = character.getDex() + character.getRace().getDexBonus() + character.getDexBonus();
+		if(label != null) { 
+			label.setText(Integer.toString(total));
+		}
+		return total;
+	}
+	
+	public static int TotalStr(Player character, Label label) { 
+		int total = character.getStr() + character.getRace().getStrBonus() + character.getStrBonus();
+		if(label != null) { 
+			label.setText(Integer.toString(total));
+		}
+		return total;
+	}
+	
+	public static int TotalCon(Player character, Label label) { 
+		int total = character.getCon() + character.getRace().getConBonus() + character.getConBonus();
+		if(label != null) { 
+			label.setText(Integer.toString(total));
+		}
+		return total;
+	}
+	
+	public static int TotalCha(Player character, Label label) { 
+		int total = character.getCha() + character.getRace().getChaBonus() + character.getChaBonus();
+		if(label != null) { 
+			label.setText(Integer.toString(total));
+		}
+		return total;
+	}
+	
+	public static int TotalWis(Player character, Label label) { 
+		int total = character.getWis() + character.getRace().getWisBonus() + character.getWisBonus();
+		if(label != null) { 
+			label.setText(Integer.toString(total));
+		}
+		return total;
+	}
+	
+	public static int TotalInt(Player character, Label label) { 
+		int total = character.getInt() + character.getRace().getIntBonus() + character.getIntBonus();
+		if(label != null) { 
+			label.setText(Integer.toString(total));
+		}
+		return total;
+	}
+	
+	/*
+	 * Returns the modifier according to the base modifier number
+	 */
+	public static int getModifier(int i) { 
+		if(i < Main.getBaseModifier()) { 
+			i -= 1;
+		}
+		return (i - Main.getBaseModifier()) / 2;
+	}
+	
+	/*
+	 * Creates a main folder in the User Home directory
+	 */
+	public static void CreateDnDFolder() { 
+		File f = new File(System.getProperty("user.home") + "/D&D Characters");
+		if(!f.isDirectory()) { 
+			f.mkdir();
+		} else { 
+			System.out.println(f.getAbsolutePath() + " is already a directory");
+		}
+	}
+	
+	public static void SaveCharacter(Player character) throws IOException, FileNotFoundException { 
+		File f = new File(System.getProperty("user.home") + "/D&D Characters/" + character.getName().toLowerCase() + ".dchar");
+		f.createNewFile();
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
+		out.writeObject(character);
+		out.close();
+		System.out.println("Saved");
+	}
+	
+	public static void LoadCharacter(String characterName) throws IOException, ClassNotFoundException { 
+		File f = null;
+		if(characterName != null) { 
+			f = new File(System.getProperty("user.home") + "/D&D Characters/" + characterName + ".dchar");
+		} else { 
+			
+		}
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
+		Player player = (Player) in.readObject();
+		in.close();
+		new CharScrSWT(player);
+	}
 	
 	public static void CheckResize(ScrolledComposite sc, Composite c) { 
 		org.eclipse.swt.graphics.Rectangle r = sc.getClientArea();
 		sc.setMinSize(c.computeSize(r.width, SWT.DEFAULT));
 	}
 	
+	public static int raceToInt(Race race) { 
+		if(race.equals(Human.class)) { 
+			return 0;
+		} else if (race.getClass().equals(Dwarf.class)) { 
+			return 1;
+		} else if (race.getClass().equals(Elf.class)) { 
+			return 2;
+		} else if (race.getClass().equals(Gnome.class)) { 
+			return 3;
+		} else if (race.getClass().equals(HalfElf.class)) { 
+			return 4;
+		} else if (race.getClass().equals(HalfOrc.class)) { 
+			return 5;
+		} else if (race.getClass().equals(Halfling.class)) { 
+			return 6;
+		} else { 
+			return -1;
+		}
+	}
+	
+	public static int getSizeAccordingToRace(Race race) { 
+		if(race.getClass().equals(Gnome.class) || race.getClass().equals(Halfling.class)) { 
+			return 3;
+		} else { 
+			return 4;
+		}
+	}
+	
+	private static int randomGender() { 
+		Random r = new Random();
+		return r.nextInt(2);
+	}
+	
+	private static int randomClass() { 
+		Random r = new Random();
+		return r.nextInt(10);
+	}
+	
 	public static Player CreateRandomPlayer(String name) { 
 		Player rand = new Player(name);
-		rand.setRace(RandomRace());
+		Race randomRace = RandomRace();
+		rand.setRace(randomRace);
+		rand.setRaceInt(raceToInt(randomRace));
+		rand.setSize(getSizeAccordingToRace(randomRace));
+		rand.setGender(randomGender());
+		rand.setClass0(randomClass());
+		rand.setAlignment(-1);
 		if(rand.getRace().getRaceName().equals("halfling")) {
-			rand.setEquippedArmor(RandomArmor("light"));
+			//add code to generate random armor
+			rand.getPlayerInventory().add(RandomArmor("light"));
 		} else { 
 			Random r = new Random();
 			int i = r.nextInt(3);
 			switch(i) { 
 			case 0:
-				rand.setEquippedArmor(RandomArmor("light"));
+				rand.getPlayerInventory().add(RandomArmor("light"));
 				break;
 			case 1:
-				rand.setEquippedArmor(RandomArmor("medium"));
+				rand.getPlayerInventory().add(RandomArmor("medium"));
 				break;
 			case 2:
-				rand.setEquippedArmor(RandomArmor("heavy"));
+				rand.getPlayerInventory().add(RandomArmor("Heavy"));
 				break;
 			}
 		}
@@ -47,15 +200,23 @@ public class Tools {
 		int i = r.nextInt(3);
 		switch(i) { 
 		case 0:
-			rand.setEquippedWeapon(RandomWeapon("simple"));
+			Weapon w = RandomWeapon("simple");
+			rand.getPlayerWeapons().add(w);
+			rand.getPlayerInventory().add(w);
 			break;
 		case 1:
-			rand.setEquippedWeapon(RandomWeapon("martial"));
+			Weapon a = RandomWeapon("martial");
+			rand.getPlayerWeapons().add(a);
+			rand.getPlayerInventory().add(a);
+			
 			break;
 		case 2:
-			rand.setEquippedWeapon(RandomWeapon("exotic"));
+			Weapon s = RandomWeapon("exotic");
+			rand.getPlayerWeapons().add(s);
+			rand.getPlayerInventory().add(s);
 			break;
 		}
+		
 		return rand;
 	}
 	
